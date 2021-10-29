@@ -93,7 +93,6 @@ const ChatInput = ({
 
       const encryptedMessage = encrypt(encryptedKey, input)
 
-      console.log(email, deviceDetails)
       const collectionRef = collection(firestore, 'users', email, 'data')
       const payload = {
         message: encryptedMessage,

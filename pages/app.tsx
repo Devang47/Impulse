@@ -74,7 +74,7 @@ const ChatUI = () => {
     setUserDeviceDetails(
       CryptoJS.SHA256(navigator.userAgent).toString(CryptoJS.enc.Hex)
     )
-  })
+  }, [])
 
   let limit = 15
   const getMessages = async () => {
