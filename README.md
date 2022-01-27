@@ -1,4 +1,4 @@
 ## Live project link:
-- https://impulse.saklani.dev/
+- https://impulse.pages.dev/
 
 ![HowItWorks.jpg](HowItWorks.jpg)
