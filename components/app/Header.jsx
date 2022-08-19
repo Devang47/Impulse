@@ -1,42 +1,37 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import LoadingBar from 'react-top-loading-bar'
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import LoadingBar from "react-top-loading-bar";
 
 const ChatHeader = ({
   signOut,
   deleteAllMessages,
   loadingProgress,
   setLoadingProgress,
-}: {
-  signOut: Function
-  deleteAllMessages: Function
-  loadingProgress: any
-  setLoadingProgress: any
 }) => {
-  const [hiddenNav, setHiddenNav] = useState(false)
-  const [installBtn, setInstallBtn] = useState(false)
+  const [hiddenNav, setHiddenNav] = useState(false);
+  const [installBtn, setInstallBtn] = useState(false);
 
   const prompt = () => {
     if (deferredPrompt !== null) {
-      deferredPrompt.prompt()
-      deferredPrompt.userChoice.then((choiceResult: any) => {
-        setInstallBtn(false)
-        if (choiceResult.outcome === 'accepted') {
-          console.log('user accepted the A2HS prompt')
-          deferredPrompt = null
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        setInstallBtn(false);
+        if (choiceResult.outcome === "accepted") {
+          console.log("user accepted the A2HS prompt");
+          deferredPrompt = null;
         }
-      })
+      });
     }
-  }
+  };
 
-  let deferredPrompt: any
+  let deferredPrompt;
   useEffect(() => {
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault()
-      deferredPrompt = e
-      setInstallBtn(true)
-    })
-  })
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      setInstallBtn(true);
+    });
+  });
 
   return (
     <header className="chatbox_header backdrop-filter bg-chat_bg shadow py-3 bg-opacity-80 backdrop-blur-sm px-4 rounded-md flex items-center justify-between z-10 w-full relative">
@@ -97,8 +92,8 @@ const ChatHeader = ({
                 aria-label="delete all messages"
                 className=" bg-msg_bg px-3 py-2 text-sm shadow-md hover:shadow-xl hover:bg-red_accent rounded-md hover:bg-input_focus duration-100 focus:filter focus:brightness-75 whitespace-nowrap"
                 onClick={() => {
-                  deleteAllMessages()
-                  setHiddenNav(!hiddenNav)
+                  deleteAllMessages();
+                  setHiddenNav(!hiddenNav);
                 }}
               >
                 Delete all
@@ -118,8 +113,8 @@ const ChatHeader = ({
                 aria-label="sign out"
                 className=" bg-msg_bg px-3 py-2 text-sm shadow-md hover:shadow-xl hover:bg-red_accent rounded-md hover:bg-input_focus duration-100 focus:filter focus:brightness-75 whitespace-nowrap"
                 onClick={() => {
-                  setHiddenNav(!hiddenNav)
-                  signOut()
+                  setHiddenNav(!hiddenNav);
+                  signOut();
                 }}
               >
                 Sign out
@@ -136,7 +131,7 @@ const ChatHeader = ({
         onLoaderFinished={() => setLoadingProgress(0)}
       />
     </header>
-  )
-}
+  );
+};
 
-export default ChatHeader
+export default ChatHeader;

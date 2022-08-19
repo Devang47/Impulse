@@ -1,45 +1,54 @@
-import firebaseApp from '../utils/firebase'
-import { useState } from 'react'
+import firebaseApp from "../utils/firebase";
+import { useState } from "react";
 import {
   getAuth,
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
-} from 'firebase/auth'
+  getRedirectResult,
+} from "firebase/auth";
 
-import { useAuthState } from 'react-firebase-hooks/auth'
-import Router from 'next/router'
-import { useEffect } from 'react'
-import { motion, useAnimation } from 'framer-motion'
+import { useAuthState } from "react-firebase-hooks/auth";
+import Router from "next/router";
+import { useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
-import Head from 'next/head'
+import Head from "next/head";
 
-const auth = getAuth(firebaseApp)
+const auth = getAuth(firebaseApp);
 
 export function SignIn() {
-  const [user, loading, error] = useAuthState(auth)
+  const [user, loading, error] = useAuthState(auth);
 
-  const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider()
-    signInWithRedirect(auth, provider)
-  }
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    const result = await getRedirectResult(auth);
 
-  const signInAnime = useAnimation()
+    console.log({ result });
+    if (result) {
+      // This is the signed-in user
+      const user = result.user;
+      console.log({ user });
+    }
+  };
+
+  const signInAnime = useAnimation();
 
   useEffect(() => {
     if (user) {
       const animate = async () => {
         await signInAnime.start({
-          height: '100%',
+          height: "100%",
           transition: { duration: 0.5, easings: [0.11, 0, 0.5, 0] },
-        })
-        Router.push('/app')
-      }
-      animate()
+        });
+        Router.push("/app");
+      };
+      animate();
     }
-    error && Router.push('/signin')
-  }, [user, error])
+    error && Router.push("/signin");
+  }, [user, error]);
 
   return (
     <>
@@ -74,7 +83,7 @@ export function SignIn() {
             }}
             className=" text-lg py-2 px-6 border border-white rounded-md shadow-md hover:shadow-2xl duration-75 text-accent  mx-auto whitespace-nowrap font-bold 
             uppercase bg-white hover:bg-gray-100"
-            style={{ color: '#1D3557' }}
+            style={{ color: "#1D3557" }}
             onClick={signInWithGoogle}
           >
             {loading ? <>loading...</> : <> Sign in </>}
@@ -82,7 +91,7 @@ export function SignIn() {
         </div>
       </section>
     </>
-  )
+  );
 }
 
-export default SignIn
+export default SignIn;

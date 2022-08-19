@@ -11,13 +11,9 @@ const ChatInput = ({
   user,
   scrollToBottom,
   setLoadingProgress,
-}: {
-  user: any
-  scrollToBottom: Function
-  setLoadingProgress: any
 }) => {
   const [input, changeInput] = useState('')
-  const [file, setFile] = useState<any>()
+  const [file, setFile] = useState()
 
   const firestore = getFirestore(firebaseApp)
 
@@ -82,7 +78,7 @@ const ChatInput = ({
     )
   }, [file])
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (input.trim()) {

@@ -7,10 +7,10 @@ export default function PlaceholderMessage() {
   const getFact = () => {
     fetch('https://api.chucknorris.io/jokes/random')
       .then((response) => response.json())
-      .then((response: any) => {
+      .then((response) => {
         setFact(response.value)
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setFact('A unknown error occurred.')
       })
   }

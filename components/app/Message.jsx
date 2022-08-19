@@ -1,60 +1,48 @@
-import { motion, useAnimation } from 'framer-motion'
-import { encrypt, decrypt } from '../../utils/encrypt'
-import CryptoJS from 'crypto-js'
-import ForMsg from '../../utils/ForMsg'
+import { motion, useAnimation } from "framer-motion";
+import { encrypt, decrypt } from "../../utils/encrypt";
+import CryptoJS from "crypto-js";
+import ForMsg from "../../utils/ForMsg";
 
-const Message = ({
-  user,
-  message,
-  received,
-  timestamp,
-  handleDelete,
-}: {
-  user: any
-  message: string
-  timestamp: string
-  received: boolean
-  handleDelete: Function
-}) => {
+const Message = ({ user, message, received, timestamp, handleDelete }) => {
   const exTime = {
     hours: getHours(new Date(parseInt(timestamp)).getHours()),
     minutes: getMinutes(new Date(parseInt(timestamp)).getMinutes()),
     meridian: getMer(new Date(parseInt(timestamp)).getHours()),
     day: new Date(parseInt(timestamp)),
+  };
+
+  function getHours(hours) {
+    return hours > 12 ? hours - 12 : hours;
   }
 
-  function getHours(hours: number) {
-    return hours > 12 ? hours - 12 : hours
+  function getMinutes(minutes) {
+    return minutes > 10 ? minutes : "0" + minutes;
   }
 
-  function getMinutes(minutes: number) {
-    return minutes > 10 ? minutes : '0' + minutes
+  function getMer(hours) {
+    return hours < 12 ? "am" : "pm";
   }
 
-  function getMer(hours: number) {
-    return hours < 12 ? 'am' : 'pm'
-  }
+  const deleteAnime = useAnimation();
 
-  const deleteAnime = useAnimation()
+  const decryptMessages = (message) => {
+    const key = timestamp + user.email + user.uid;
+    const encryptedKey = CryptoJS.SHA256(key).toString(CryptoJS.enc.Hex);
+    const decryptedMessage = decrypt(encryptedKey, message);
 
-  const decryptMessages = (message: string) => {
-    const key = timestamp + user.email + user.uid
-    const encryptedKey = CryptoJS.SHA256(key).toString(CryptoJS.enc.Hex)
-    const decryptedMessage = decrypt(encryptedKey, message)
+    return decryptedMessage;
+  };
 
-    return decryptedMessage
-  }
-
-  async function deleteMessage(timestamp: string) {
+  async function deleteMessage(timestamp) {
     await deleteAnime.start({
       scale: [1, 0.95],
       opacity: [1, 0],
       transition: { duration: 0.2 },
       transitionEnd: {
-        display: 'none',
+        display: "none",
       },
-    })
-    handleDelete(timestamp)
+    });
+    handleDelete(timestamp);
   }
 
   return (
@@ -65,7 +53,7 @@ const Message = ({
           transition: { duration: 0.3, damping: 0.2 },
         }}
         className={`py-2.5 px-4 rounded-md max-w-xl message_box shadows-lg pb-2 relative pr-16 message_bg group ${
-          !received && 'ml-auto '
+          !received && "ml-auto "
         }`}
       >
         <span>
@@ -87,8 +75,8 @@ const Message = ({
         </button>
       </motion.div>
     </motion.div>
-  )
-}
+  );
+};
 
 function CrossIcon() {
   return (
@@ -104,7 +92,7 @@ function CrossIcon() {
     >
       <path d="M62 10.571L53.429 2L32 23.429L10.571 2L2 10.571L23.429 32L2 53.429L10.571 62L32 40.571L53.429 62L62 53.429L40.571 32z" />
     </svg>
-  )
+  );
 }
 
-export default Message
+export default Message;

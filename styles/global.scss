@@ -2,42 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-// @font-face {
-//   font-family: 'HelveticaNow';
-//   src: url('/fonts/HelveticaNowText-Bold.woff2');
-//   font-weight: 600;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: 'HelveticaNow';
-//   src: url('/fonts/HelveticaNowText-Black.woff2');
-//   font-weight: 800;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: 'HelveticaNow';
-//   src: url('/fonts/HelveticaNowText-ExtraBold.woff2');
-//   font-weight: 700;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: 'HelveticaNow';
-//   src: url('/fonts/HelveticaNowText-Medium.woff2');
-//   font-weight: 500;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: 'HelveticaNow';
-//   src: url('/fonts/HelveticaNowText-Regular.woff2');
-//   font-weight: 400;
-//   font-display: swap;
-// }
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 html {
   scroll-behavior: smooth;
@@ -46,7 +11,7 @@ html {
 body {
   background-color: #ffffff;
   color: #fafafa;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 html,
@@ -120,7 +85,7 @@ a {
 
 .signin_bg {
   background-color: #1d3557;
-  background-image: url('/Assets/signin_bg.jpg');
+  background-image: url("/Assets/signin_bg.jpg");
   background-position: center;
   background-size: cover;
 }
@@ -143,7 +108,7 @@ $landing_blue: #39b2e7;
 $landing_red: #e63946;
 
 .landing_section {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #202020;
   grid-template-columns: 60% 40%;
 

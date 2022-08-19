@@ -1,16 +1,16 @@
-import React, { useRef, useEffect, useState } from 'react'
-import Head from 'next/head'
-import Message from '../components/app/Message'
-import ChatHeader from '../components/app/Header'
-import ChatInput from '../components/app/Input'
-import PlaceholderMessage from '../components/app/PlaceholderMsg'
+import React, { useRef, useEffect, useState } from "react";
+import Head from "next/head";
+import Message from "../components/app/Message";
+import ChatHeader from "../components/app/Header";
+import ChatInput from "../components/app/Input";
+import PlaceholderMessage from "../components/app/PlaceholderMsg";
 
-import Router from 'next/router'
-import { motion, useAnimation } from 'framer-motion'
+import Router from "next/router";
+import { motion, useAnimation } from "framer-motion";
 
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { getAuth } from 'firebase/auth'
-import firebaseApp, { storage } from '../utils/firebase'
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
+import firebaseApp, { storage } from "../utils/firebase";
 import {
   doc,
   setDoc,
@@ -23,108 +23,109 @@ import {
   getDocs,
   deleteDoc,
   limitToLast,
-} from 'firebase/firestore'
+} from "firebase/firestore";
 
-import { ref, deleteObject, listAll } from 'firebase/storage'
+import { ref, deleteObject, listAll } from "firebase/storage";
 
-import CryptoJS from 'crypto-js'
+import CryptoJS from "crypto-js";
 
 const ChatUI = () => {
-  const scroll = useRef<null | HTMLDivElement>(null)
-  const [messages, setMessages] = useState<any[]>()
+  const scroll = useRef(null);
+  const [messages, setMessages] = useState();
 
-  const auth = getAuth(firebaseApp)
-  const firestore = getFirestore(firebaseApp)
-  const [user, loading, error] = useAuthState(auth)
+  const auth = getAuth(firebaseApp);
+  const firestore = getFirestore(firebaseApp);
+  const [user, loading, error] = useAuthState(auth);
 
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(0);
 
-  const [userDeviceDetails, setUserDeviceDetails] = useState('')
+  const [userDeviceDetails, setUserDeviceDetails] = useState("");
 
-  let cryptedEmail: string
+  let cryptedEmail;
   if (user) {
-    cryptedEmail = CryptoJS.SHA256(user.email).toString(CryptoJS.enc.Hex)
+    cryptedEmail = CryptoJS.SHA256(user.email).toString(CryptoJS.enc.Hex);
   }
 
   useEffect(() => {
     if (!user) {
-      Router.push('/signin')
-      return
+      Router.push("/signin");
+      return;
     } else {
-      handleUser()
+      handleUser();
     }
 
     if (error) {
-      Router.push('/signin')
-      return
+      Router.push("/signin");
+      return;
     }
 
     console.log(
-      '%c%s',
+      "%c%s",
       'color: #001219; background: #E4F8FF; font-size: 32px; padding: 10px 10px; font-weight: 600; font-family: "Inter", sans-serif;',
-      'Welcome to Impulse!!'
-    )
+      "Welcome to Impulse!!"
+    );
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(() => {
-        console.log('Service Worker Registered')
-      })
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").then(() => {
+        console.log("Service Worker Registered");
+      });
     }
 
     setUserDeviceDetails(
       CryptoJS.SHA256(navigator.userAgent).toString(CryptoJS.enc.Hex)
-    )
-  }, [])
+    );
+  }, []);
 
-  let limit = 15
+  let limit = 15;
   const getMessages = async () => {
-    const dataCollection = collection(firestore, 'users', cryptedEmail, 'data')
+    const dataCollection = collection(firestore, "users", cryptedEmail, "data");
 
     const dataQuery = query(
       dataCollection,
-      orderBy('timestamp'),
+      orderBy("timestamp"),
       limitToLast(limit)
-    )
+    );
 
     onSnapshot(dataQuery, (snapshot) => {
-      setMessages(snapshot.docs.map((doc) => doc.data()))
-      scrollToBottom()
-    })
-  }
+      setMessages(snapshot.docs.map((doc) => doc.data()));
+      scrollToBottom();
+    });
+  };
 
   const signOut = () => {
-    auth.signOut()
-  }
+    auth.signOut();
+    Router.push("/signin");
+  };
 
   const handleUser = async () => {
-    const usersRef = doc(firestore, 'users', cryptedEmail)
+    const usersRef = doc(firestore, "users", cryptedEmail);
     await setDoc(
       usersRef,
       {
         email: CryptoJS.SHA256(user.email).toString(CryptoJS.enc.Hex),
       },
       { merge: true }
-    )
+    );
 
-    getMessages()
-  }
+    getMessages();
+  };
 
-  const handleDelete = async (timestamp: number) => {
-    const collectionRef = collection(firestore, 'users', cryptedEmail, 'data')
+  const handleDelete = async (timestamp) => {
+    const collectionRef = collection(firestore, "users", cryptedEmail, "data");
 
-    const q = query(collectionRef, where('timestamp', '==', timestamp))
+    const q = query(collectionRef, where("timestamp", "==", timestamp));
 
-    const snapshot = await getDocs(q)
+    const snapshot = await getDocs(q);
     const messageRef = snapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
-    }))
+    }));
 
     messageRef.forEach(async (result) => {
-      const docRef = doc(firestore, 'users', cryptedEmail, 'data', result.id)
-      await deleteDoc(docRef)
-    })
-  }
+      const docRef = doc(firestore, "users", cryptedEmail, "data", result.id);
+      await deleteDoc(docRef);
+    });
+  };
 
   const deleteAllMessages = async () => {
     await deleteAnime.start({
@@ -132,59 +133,59 @@ const ChatUI = () => {
       opacity: [1, 0],
       transition: { duration: 0.2 },
       transitionEnd: {
-        display: 'none',
+        display: "none",
       },
-    })
+    });
 
-    const filesRef = ref(storage, cryptedEmail + '/')
-    const files = await listAll(filesRef)
+    const filesRef = ref(storage, cryptedEmail + "/");
+    const files = await listAll(filesRef);
 
     files.items.forEach(async (e) => {
       // @ts-ignore
-      let path = e._location.path
+      let path = e._location.path;
 
-      const filesRef = ref(storage, path)
+      const filesRef = ref(storage, path);
       await deleteObject(filesRef)
         .then((e) => {
           console.log(
-            '%c%s',
-            'color: #001219; background: #E4F8FF; font-size: 18px; padding: 2px 4px; font-weight: 700;',
-            'Success!'
-          )
+            "%c%s",
+            "color: #001219; background: #E4F8FF; font-size: 18px; padding: 2px 4px; font-weight: 700;",
+            "Success!"
+          );
         })
         .catch((e) => {
-          console.error(e)
-        })
-    })
+          console.error(e);
+        });
+    });
 
-    const collectionRef = collection(firestore, 'users', cryptedEmail, 'data')
+    const collectionRef = collection(firestore, "users", cryptedEmail, "data");
 
-    const q = query(collectionRef)
+    const q = query(collectionRef);
 
-    const snapshot = await getDocs(q)
+    const snapshot = await getDocs(q);
     const messageRef = snapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
-    }))
+    }));
 
     messageRef.forEach(async (result) => {
-      const docRef = doc(firestore, 'users', cryptedEmail, 'data', result.id)
-      await deleteDoc(docRef)
-    })
-  }
+      const docRef = doc(firestore, "users", cryptedEmail, "data", result.id);
+      await deleteDoc(docRef);
+    });
+  };
 
   const scrollToBottom = () => {
     if (scroll.current) {
-      scroll.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      scroll.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }
+  };
 
   const loadMoreMessages = () => {
-    limit += 15
-    getMessages()
-  }
+    limit += 15;
+    getMessages();
+  };
 
-  const deleteAnime = useAnimation()
+  const deleteAnime = useAnimation();
 
   return (
     <>
@@ -225,7 +226,7 @@ const ChatUI = () => {
                       )}
                       {messages.map((details) => {
                         const recieved =
-                          details.device === userDeviceDetails ? false : true
+                          details.device === userDeviceDetails ? false : true;
                         return (
                           <Message
                             user={user}
@@ -235,7 +236,7 @@ const ChatUI = () => {
                             received={recieved}
                             handleDelete={handleDelete}
                           />
-                        )
+                        );
                       })}
                     </motion.div>
                   </>
@@ -256,8 +257,8 @@ const ChatUI = () => {
         </section>
       )}
     </>
-  )
-}
+  );
+};
 
 function App() {
   return (
@@ -274,7 +275,7 @@ function App() {
         <ChatUI />
       </motion.div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
