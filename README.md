@@ -1,6 +1,6 @@
 `development: true`
 
 ## Live project link:
-- https://impulse.pages.dev/
+- https://impulse.saklani.dev/
 
 ![HowItWorks.jpg](HowItWorks.jpg)
